@@ -1,0 +1,47 @@
+# Dependencies
+vendor/
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Uploads (keep structure but ignore uploaded files)
+public/uploads/courses/*
+!public/uploads/courses/.gitkeep
+public/uploads/resources/*
+!public/uploads/resources/.gitkeep
+public/uploads/certificates/*
+!public/uploads/certificates/.gitkeep
+
+# Temporary files
+/tmp/
+temp/
+*.tmp
+*.cache
+
+# Build files
+dist/
+build/
+
+# Database backups
+*.sql.gz
+*.sql.zip
+backup/
