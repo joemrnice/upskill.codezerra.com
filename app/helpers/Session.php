@@ -136,10 +136,31 @@ class Session {
     /**
      * Get and clear flash message
      */
-    public static function getFlash() {
+    public static function getFlash($type = null) {
         $flash = self::get('flash');
+        if ($flash && $type) {
+            if (is_array($flash) && isset($flash['type']) && $flash['type'] === $type) {
+                self::remove('flash');
+                return $flash['message'] ?? null;
+            }
+            return null;
+        }
         self::remove('flash');
         return $flash;
+    }
+    
+    /**
+     * Check if flash message exists
+     */
+    public static function hasFlash($type = null) {
+        $flash = self::get('flash');
+        if (!$flash) {
+            return false;
+        }
+        if ($type && is_array($flash)) {
+            return isset($flash['type']) && $flash['type'] === $type;
+        }
+        return true;
     }
     
     /**
