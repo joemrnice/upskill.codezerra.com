@@ -181,13 +181,23 @@ class AuthController {
      * Logout user
      */
     public function logout() {
+        // Verify CSRF token for POST requests
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!isset($_POST['csrf_token']) || !Session::verifyToken($_POST['csrf_token'])) {
+                Session::setFlash('error', 'Invalid request.');
+                redirect(base_url('public/index.php'));
+            }
+        }
+        
+        // Set flash message before destroying session
+        Session::setFlash('success', 'You have been logged out successfully.');
+        
         // Clear remember me cookie
         if (isset($_COOKIE['remember_token'])) {
             setcookie('remember_token', '', time() - 3600, '/', '', true, true);
         }
         
         Session::destroy();
-        Session::setFlash('success', 'You have been logged out successfully.');
         redirect(base_url('public/auth/login.php'));
     }
     

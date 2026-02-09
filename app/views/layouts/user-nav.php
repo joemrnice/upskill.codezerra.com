@@ -63,9 +63,12 @@
                             Settings
                         </a>
                         <div class="border-t border-gray-200 mt-2"></div>
-                        <a href="<?php echo base_url('public/auth/logout.php'); ?>" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                            Logout
-                        </a>
+                        <form method="POST" action="<?php echo base_url('public/auth/logout.php'); ?>">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -93,7 +96,10 @@
             <div class="pt-3 border-t border-gray-200">
                 <a href="<?php echo base_url('public/user/profile.php'); ?>" class="block text-gray-700 hover:text-purple-600 py-2">Profile</a>
                 <a href="<?php echo base_url('public/user/settings.php'); ?>" class="block text-gray-700 hover:text-purple-600 py-2">Settings</a>
-                <a href="<?php echo base_url('public/auth/logout.php'); ?>" class="block text-red-600 hover:text-red-800 py-2">Logout</a>
+                <form method="POST" action="<?php echo base_url('public/auth/logout.php'); ?>" class="mt-2">
+                    <?php echo csrf_field(); ?>
+                    <button type="submit" class="block w-full text-left text-red-600 hover:text-red-800 py-2">Logout</button>
+                </form>
             </div>
         </div>
     </div>

@@ -228,6 +228,7 @@ function calculatePasswordStrength(password) {
 function updateStrengthIndicator(strength) {
     const colors = ['bg-gray-200', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500'];
     const texts = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    const textColors = ['', 'text-red-600', 'text-orange-600', 'text-yellow-600', 'text-green-600'];
     
     for (let i = 1; i <= 4; i++) {
         const bar = document.getElementById('strength' + i);
@@ -235,7 +236,7 @@ function updateStrengthIndicator(strength) {
     }
     
     document.getElementById('strengthText').textContent = texts[strength];
-    document.getElementById('strengthText').className = 'text-xs mt-1 ' + (strength > 0 ? 'text-' + ['gray', 'red', 'orange', 'yellow', 'green'][strength] + '-600' : '');
+    document.getElementById('strengthText').className = 'text-xs mt-1 ' + textColors[strength];
 }
 
 // Toggle password visibility
