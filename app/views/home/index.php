@@ -93,6 +93,25 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 </section>
 
+<?php if (isset($db_error) && $db_error): ?>
+<!-- Database Notice -->
+<section class="py-8 bg-yellow-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div>
+                    <p class="text-yellow-800 font-semibold">Database Configuration Required</p>
+                    <p class="text-yellow-700 text-sm mt-1">The application is running with limited functionality. Please configure the database to access full features. Check README.md for setup instructions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- Statistics Section -->
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
