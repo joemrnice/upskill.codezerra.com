@@ -16,6 +16,23 @@ require_once __DIR__ . '/../layouts/header.php';
             </p>
         </div>
         
+        <?php if (isset($db_error) && $db_error): ?>
+        <!-- Database Error Notice -->
+        <div class="mb-8">
+            <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded-lg">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div>
+                        <p class="text-red-800 font-semibold">Database Connection Error</p>
+                        <p class="text-red-700 text-sm mt-1"><?php echo e($error_message ?? 'Unable to load dashboard data. Please contact the administrator.'); ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+        
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white rounded-xl p-6 shadow-custom">
