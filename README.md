@@ -189,6 +189,10 @@ mysql -h YOUR_MYSQL_HOSTNAME -u YOUR_USERNAME -p YOUR_DATABASE_NAME < database/s
 - Apache 2.4+ with mod_rewrite enabled OR Nginx
 - Composer (optional, for dependency management)
 
+### Quick Start
+
+The application will work without a database initially, but with limited functionality. You'll see a warning message on the landing page indicating that database configuration is required for full features.
+
 ### Setup Steps
 
 1. **Clone the repository:**
@@ -203,22 +207,60 @@ mysql -h YOUR_MYSQL_HOSTNAME -u YOUR_USERNAME -p YOUR_DATABASE_NAME < database/s
    # Edit .env with your database and site configuration
    ```
 
-3. **Import database:**
+3. **Create and configure database:**
+   
+   Create a new MySQL database:
+   ```bash
+   mysql -u root -p
+   CREATE DATABASE upskill_training CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   CREATE USER 'upskill_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+   GRANT ALL PRIVILEGES ON upskill_training.* TO 'upskill_user'@'localhost';
+   FLUSH PRIVILEGES;
+   EXIT;
+   ```
+
+4. **Import database schema:**
    ```bash
    mysql -u your_user -p your_database < database/schema.sql
    ```
+   
+   This will create all necessary tables and insert sample data including:
+   - Admin user (email: admin@codezerra.com, password: admin123)
+   - Sample courses for testing
 
-4. **Set file permissions:**
+5. **Set file permissions:**
    ```bash
    chmod -R 755 public/
    chmod -R 775 public/uploads/
    chown -R www-data:www-data public/uploads/
    ```
 
-5. **Configure Apache:**
+6. **Configure Apache:**
    - Enable mod_rewrite: `sudo a2enmod rewrite`
    - Point document root to `/path/to/upskill.codezerra.com/public`
    - Restart Apache: `sudo systemctl restart apache2`
+
+### Default Credentials
+
+After importing the database schema, you can login with:
+
+- **Admin Account:**
+  - Email: admin@codezerra.com
+  - Password: admin123
+  
+- **Test User Account:**
+  - Email: user@example.com
+  - Password: password123
+
+**Important:** Change these default passwords immediately after first login!
+
+### Verifying Installation
+
+1. **Access the application:** Navigate to your configured URL (e.g., https://upskill.codezerra.com)
+2. **Landing page should load** without errors
+3. **If database is not configured:** You'll see a yellow warning banner but the page will still load
+4. **If database is configured:** The landing page will show real statistics and course listings
+5. **Test login:** Try logging in with the admin credentials
 
 ## Development vs Production
 
@@ -258,7 +300,39 @@ For production environments:
 
 ## Troubleshooting
 
+### Database Connection Issues
+
+**Symptom:** Yellow warning banner appears on landing page saying "Database Configuration Required"
+
+**Solutions:**
+1. **Verify database credentials** in `.env` or `config/database.php`:
+   - Check DB_HOST (use `localhost` or actual MySQL hostname)
+   - Verify DB_NAME matches your database name
+   - Confirm DB_USER and DB_PASS are correct
+
+2. **Test database connection:**
+   ```bash
+   mysql -h YOUR_HOST -u YOUR_USER -p YOUR_DATABASE
+   ```
+
+3. **Check if database exists:**
+   ```bash
+   mysql -u root -p
+   SHOW DATABASES;
+   ```
+
+4. **Verify user permissions:**
+   ```sql
+   SHOW GRANTS FOR 'your_user'@'localhost';
+   ```
+
+5. **For DreamHost:** Hostname is NOT `localhost`, check DreamHost panel for correct MySQL hostname
+
+**Note:** The application will still work without a database, but only displays the landing page with zero statistics.
+
 ### Internal Server Error (500)
+
+**Previous Issue (Now Fixed):** Controllers were trying to connect to database in constructors, causing fatal errors when database wasn't configured. This has been fixed - the application now gracefully handles missing database connections.
 
 1. **Check Apache error logs:**
    ```bash
