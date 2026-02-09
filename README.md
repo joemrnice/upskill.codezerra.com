@@ -83,7 +83,9 @@ server {
     }
     
     location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        # Adjust the socket path based on your PHP version
+        # Examples: php-fpm.sock, php7.4-fpm.sock, php8.1-fpm.sock, php8.2-fpm.sock
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
