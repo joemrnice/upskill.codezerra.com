@@ -5,13 +5,17 @@
     RewriteEngine On
     RewriteBase /
     
-    # Redirect to public directory
-    # Skip if request already points to public directory
+    # Don't rewrite if already in public or accessing public files
     RewriteCond %{REQUEST_URI} !^/public/
-    # Skip if request is for a file or directory that exists in root
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ /public/$1 [L,QSA]
+    
+    # Redirect everything to public directory
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+    
+    # If accessing public directly, handle it
+    RewriteCond %{REQUEST_URI} ^/public/
+    RewriteRule ^public/(.*)$ public/$1 [L,QSA]
 </IfModule>
 
 # Security Headers
