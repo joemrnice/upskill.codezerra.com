@@ -185,7 +185,7 @@ class Enrollment {
         $totalResult = $this->db->fetch($sql, ['course_id' => $courseId]);
         $total = $totalResult['total'];
         
-        if ($total == 0) {
+        if ($total === 0) {
             return 0;
         }
         

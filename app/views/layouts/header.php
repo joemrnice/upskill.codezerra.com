@@ -109,10 +109,13 @@
     </div>
     <script>
         setTimeout(function() {
-            document.querySelector('.success-message').style.opacity = '0';
-            setTimeout(function() {
-                document.querySelector('.success-message').remove();
-            }, 500);
+            const message = document.querySelector('.success-message');
+            if (message) {
+                message.style.opacity = '0';
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            }
         }, 5000);
     </script>
     <?php endif; ?>
