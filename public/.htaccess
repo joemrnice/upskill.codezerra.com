@@ -3,7 +3,7 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /public/
+    RewriteBase /
     
     # Allow direct access to static assets (CSS, JS, images, uploads)
     RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -13,6 +13,22 @@
     # Route everything else through router.php for clean URLs
     RewriteRule ^(.*)$ router.php [L,QSA]
 </IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# PHP configuration for debugging
+# IMPORTANT: For production, set display_errors to Off and rely on log_errors only
+# You can override these in .env or php.ini based on your environment
+php_flag display_errors On
+php_flag log_errors On
 
 # Security: Prevent access to sensitive files
 <FilesMatch "^\.">

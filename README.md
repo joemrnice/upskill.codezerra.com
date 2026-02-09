@@ -104,6 +104,82 @@ server {
 }
 ```
 
+## 🌐 DreamHost Deployment Instructions
+
+### Option 1: Change Web Directory (Recommended)
+1. Log into DreamHost Panel
+2. Go to **Domains** → **Manage Domains**
+3. Click **Edit** next to `upskill.codezerra.com`
+4. Under "Web directory", change from `/home/$USER/upskill.codezerra.com` to `/home/$USER/upskill.codezerra.com/public`
+   (Replace `$USER` with your actual DreamHost username)
+5. Click **Change settings**
+6. Wait 5-10 minutes for DNS propagation
+
+### Option 2: Use Root .htaccess (Current Setup)
+If you cannot change the web directory, the root `.htaccess` will automatically redirect all requests to the `public` folder.
+
+**Verify your setup:**
+```bash
+# SSH into DreamHost (replace $USER with your username)
+cd ~/upskill.codezerra.com
+
+# Check if files are present
+ls -la public/
+
+# Check if .htaccess exists
+cat .htaccess
+cat public/.htaccess
+```
+
+### Database Setup on DreamHost
+1. Create MySQL database in DreamHost Panel
+2. Note down: database name, username, password, hostname
+3. Copy `.env.example` to `.env`:
+```bash
+cd ~/upskill.codezerra.com
+cp .env.example .env
+chmod 600 .env  # Secure the file
+```
+
+4. Edit `.env` file with your database credentials:
+```bash
+nano .env  # or use your preferred editor
+```
+
+Update the values:
+```env
+DB_HOST="mysql.yourhostname.com"
+DB_NAME="your_database_name"
+DB_USER="your_username"
+DB_PASS="your_password"
+SITE_URL="https://upskill.codezerra.com"
+```
+
+5. Import the database schema:
+```bash
+mysql -h YOUR_MYSQL_HOSTNAME -u YOUR_USERNAME -p YOUR_DATABASE_NAME < database/schema.sql
+```
+
+**Security Note:** Never store credentials in `.htaccess` files. Always use `.env` files with proper permissions (chmod 600) and ensure `.env` is in your `.gitignore` file.
+
+### Troubleshooting DreamHost Issues
+
+**Issue: Still seeing "almost here!" page**
+- Clear browser cache
+- Wait 5-10 minutes for DreamHost cache to clear
+- Check that files are uploaded to the correct directory
+- Verify .htaccess files are present
+
+**Issue: 500 Internal Server Error**
+- Check DreamHost error logs: `~/logs/upskill.codezerra.com/https/error.log`
+- Verify PHP version is 7.4+ in DreamHost Panel
+- Check file permissions: `chmod 755` on directories, `chmod 644` on files
+
+**Issue: Database Connection Error**
+- Verify database credentials in config
+- Check that database hostname is correct (not localhost)
+- Ensure MySQL user has access to the database
+
 ## Installation
 
 ### Requirements
