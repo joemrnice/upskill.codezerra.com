@@ -13,10 +13,6 @@ class HomeController {
     private $userModel;
     private $enrollmentModel;
     
-    public function __construct() {
-        // Models will be instantiated lazily when needed
-    }
-    
     /**
      * Show landing page with statistics
      */

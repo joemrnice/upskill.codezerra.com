@@ -104,7 +104,7 @@ require_once __DIR__ . '/../layouts/header.php';
                 </svg>
                 <div>
                     <p class="text-yellow-800 font-semibold">Database Configuration Required</p>
-                    <p class="text-yellow-700 text-sm mt-1">The application is running with limited functionality. Please configure the database to access full features. Check README.md for setup instructions.</p>
+                    <p class="text-yellow-700 text-sm mt-1">The application is running with limited functionality. Please contact your system administrator to configure the database connection.</p>
                 </div>
             </div>
         </div>
