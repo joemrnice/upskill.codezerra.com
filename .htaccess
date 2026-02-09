@@ -3,10 +3,15 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
     
     # Redirect to public directory
+    # Skip if request already points to public directory
     RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ /public/$1 [L]
+    # Skip if request is for a file or directory that exists in root
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /public/$1 [L,QSA]
 </IfModule>
 
 # Security Headers
@@ -27,6 +32,5 @@ Options -Indexes
 </FilesMatch>
 
 # PHP Security
-php_flag display_errors Off
-php_flag log_errors On
-php_value error_log /tmp/php_errors.log
+# Note: PHP configuration should be managed in php.ini or bootstrap.php
+# Removed php_flag directives to avoid conflicts with application configuration
