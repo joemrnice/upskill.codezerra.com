@@ -102,7 +102,7 @@ class CourseController {
     public function enroll() {
         if (!Session::isLoggedIn()) {
             Session::setFlash('error', 'Please login to enroll in courses.');
-            redirect(base_url('login.php'));
+            redirect(base_url('auth/login.php'));
             return;
         }
         
@@ -141,7 +141,7 @@ class CourseController {
     public function processEnroll() {
         if (!Session::isLoggedIn()) {
             Session::setFlash('error', 'Please login to enroll in courses.');
-            redirect(base_url('login.php'));
+            redirect(base_url('auth/login.php'));
             return;
         }
         

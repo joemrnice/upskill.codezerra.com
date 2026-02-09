@@ -26,7 +26,7 @@ class LearningController {
     public function show() {
         if (!Session::isLoggedIn()) {
             Session::setFlash('error', 'Please login to access courses.');
-            redirect(base_url('login.php'));
+            redirect(base_url('auth/login.php'));
             return;
         }
         

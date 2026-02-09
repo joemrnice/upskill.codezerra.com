@@ -175,7 +175,7 @@
                         </button>
                     </form>
                 <?php else: ?>
-                    <a href="<?php echo base_url('login.php'); ?>" class="block w-full text-center px-6 py-3 bg-gradient-primary text-white rounded-lg font-semibold hover:opacity-90 transition">
+                    <a href="<?php echo base_url('auth/login.php'); ?>" class="block w-full text-center px-6 py-3 bg-gradient-primary text-white rounded-lg font-semibold hover:opacity-90 transition">
                         Login to Enroll
                     </a>
                 <?php endif; ?>
