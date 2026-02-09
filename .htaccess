@@ -1,0 +1,32 @@
+# Apache Configuration for Upskill Training Platform
+# Enable URL Rewriting
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirect to public directory
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ /public/$1 [L]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Protect config files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# PHP Security
+php_flag display_errors Off
+php_flag log_errors On
+php_value error_log /tmp/php_errors.log
