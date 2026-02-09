@@ -247,20 +247,12 @@ class Assessment {
      * Check if an answer is correct
      */
     private function checkAnswer($question, $userAnswer) {
-        switch ($question['question_type']) {
-            case 'multiple_choice':
-                return strcasecmp(trim($userAnswer), trim($question['correct_answer'])) === 0;
-                
-            case 'true_false':
-                return strcasecmp(trim($userAnswer), trim($question['correct_answer'])) === 0;
-                
-            case 'short_answer':
-                // For short answers, we'll do a case-insensitive comparison
-                return strcasecmp(trim($userAnswer), trim($question['correct_answer'])) === 0;
-                
-            default:
-                return false;
+        // All question types use case-insensitive comparison
+        if (in_array($question['question_type'], ['multiple_choice', 'true_false', 'short_answer'])) {
+            return strcasecmp(trim($userAnswer), trim($question['correct_answer'])) === 0;
         }
+        
+        return false;
     }
     
     /**
