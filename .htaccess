@@ -12,10 +12,6 @@
     
     # Redirect everything to public directory
     RewriteRule ^(.*)$ public/$1 [L,QSA]
-    
-    # If accessing public directly, handle it
-    RewriteCond %{REQUEST_URI} ^/public/
-    RewriteRule ^public/(.*)$ public/$1 [L,QSA]
 </IfModule>
 
 # Security Headers

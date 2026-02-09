@@ -110,7 +110,8 @@ server {
 1. Log into DreamHost Panel
 2. Go to **Domains** → **Manage Domains**
 3. Click **Edit** next to `upskill.codezerra.com`
-4. Under "Web directory", change from `/home/username/upskill.codezerra.com` to `/home/username/upskill.codezerra.com/public`
+4. Under "Web directory", change from `/home/$USER/upskill.codezerra.com` to `/home/$USER/upskill.codezerra.com/public`
+   (Replace `$USER` with your actual DreamHost username)
 5. Click **Change settings**
 6. Wait 5-10 minutes for DNS propagation
 
@@ -119,7 +120,7 @@ If you cannot change the web directory, the root `.htaccess` will automatically 
 
 **Verify your setup:**
 ```bash
-# SSH into DreamHost
+# SSH into DreamHost (replace $USER with your username)
 cd ~/upskill.codezerra.com
 
 # Check if files are present
@@ -133,20 +134,33 @@ cat public/.htaccess
 ### Database Setup on DreamHost
 1. Create MySQL database in DreamHost Panel
 2. Note down: database name, username, password, hostname
-3. SSH into your server and import schema:
+3. Copy `.env.example` to `.env`:
+```bash
+cd ~/upskill.codezerra.com
+cp .env.example .env
+chmod 600 .env  # Secure the file
+```
+
+4. Edit `.env` file with your database credentials:
+```bash
+nano .env  # or use your preferred editor
+```
+
+Update the values:
+```env
+DB_HOST="mysql.yourhostname.com"
+DB_NAME="your_database_name"
+DB_USER="your_username"
+DB_PASS="your_password"
+SITE_URL="https://upskill.codezerra.com"
+```
+
+5. Import the database schema:
 ```bash
 mysql -h YOUR_MYSQL_HOSTNAME -u YOUR_USERNAME -p YOUR_DATABASE_NAME < database/schema.sql
 ```
 
-4. Set environment variables in `.htaccess` or create `.env` file:
-```bash
-# In public/.htaccess, add:
-SetEnv DB_HOST "mysql.example.com"
-SetEnv DB_NAME "your_database_name"
-SetEnv DB_USER "your_username"
-SetEnv DB_PASS "your_password"
-SetEnv SITE_URL "https://upskill.codezerra.com"
-```
+**Security Note:** Never store credentials in `.htaccess` files. Always use `.env` files with proper permissions (chmod 600) and ensure `.env` is in your `.gitignore` file.
 
 ### Troubleshooting DreamHost Issues
 

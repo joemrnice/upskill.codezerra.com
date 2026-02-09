@@ -24,7 +24,9 @@
 # Prevent directory browsing
 Options -Indexes
 
-# Enable error display for debugging (disable in production)
+# PHP configuration for debugging
+# IMPORTANT: For production, set display_errors to Off and rely on log_errors only
+# You can override these in .env or php.ini based on your environment
 php_flag display_errors On
 php_flag log_errors On
 
