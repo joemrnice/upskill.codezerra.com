@@ -12,7 +12,13 @@ class AuthController {
     private $userModel;
     
     public function __construct() {
-        $this->userModel = new User();
+        try {
+            $this->userModel = new User();
+        } catch (Exception $e) {
+            error_log("AuthController initialization error: " . $e->getMessage());
+            // If database connection fails, it will be caught by ErrorHandler
+            throw $e;
+        }
     }
     
     /**
@@ -57,43 +63,49 @@ class AuthController {
             redirect(base_url('public/auth/login.php'));
         }
         
-        // Verify credentials
-        $user = $this->userModel->verifyCredentials($email, $password);
-        
-        if (!$user) {
-            Session::setFlash('error', 'Invalid email or password.');
+        try {
+            // Verify credentials
+            $user = $this->userModel->verifyCredentials($email, $password);
+            
+            if (!$user) {
+                Session::setFlash('error', 'Invalid email or password.');
+                redirect(base_url('public/auth/login.php'));
+            }
+            
+            // Check if user is active
+            if ($user['status'] !== 'active') {
+                Session::setFlash('error', 'Your account has been suspended. Please contact administrator.');
+                redirect(base_url('public/auth/login.php'));
+            }
+            
+            // Regenerate session ID for security
+            Session::regenerate();
+            
+            // Set session variables
+            Session::set('user_id', $user['id']);
+            Session::set('user_name', $user['name']);
+            Session::set('user_email', $user['email']);
+            Session::set('user_role', $user['role']);
+            
+            // Handle remember me
+            if ($remember) {
+                $token = bin2hex(random_bytes(32));
+                setcookie('remember_token', $token, time() + (86400 * 30), '/', '', true, true);
+                // In production, store token hash in database
+            }
+            
+            Session::setFlash('success', 'Welcome back, ' . $user['name'] . '!');
+            
+            // Redirect based on role
+            if ($user['role'] === 'admin') {
+                redirect(base_url('public/admin/dashboard.php'));
+            } else {
+                redirect(base_url('public/index.php'));
+            }
+        } catch (Exception $e) {
+            error_log("Login error: " . $e->getMessage());
+            Session::setFlash('error', 'An error occurred during login. Please try again later.');
             redirect(base_url('public/auth/login.php'));
-        }
-        
-        // Check if user is active
-        if ($user['status'] !== 'active') {
-            Session::setFlash('error', 'Your account has been suspended. Please contact administrator.');
-            redirect(base_url('public/auth/login.php'));
-        }
-        
-        // Regenerate session ID for security
-        Session::regenerate();
-        
-        // Set session variables
-        Session::set('user_id', $user['id']);
-        Session::set('user_name', $user['name']);
-        Session::set('user_email', $user['email']);
-        Session::set('user_role', $user['role']);
-        
-        // Handle remember me
-        if ($remember) {
-            $token = bin2hex(random_bytes(32));
-            setcookie('remember_token', $token, time() + (86400 * 30), '/', '', true, true);
-            // In production, store token hash in database
-        }
-        
-        Session::setFlash('success', 'Welcome back, ' . $user['name'] . '!');
-        
-        // Redirect based on role
-        if ($user['role'] === 'admin') {
-            redirect(base_url('public/admin/dashboard.php'));
-        } else {
-            redirect(base_url('public/index.php'));
         }
     }
     
