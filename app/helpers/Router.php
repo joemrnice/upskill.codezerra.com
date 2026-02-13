@@ -71,11 +71,13 @@ class Router {
     public static function loadController($controllerName) {
         // Sanitize controller name to prevent directory traversal
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $controllerName)) {
-            throw new Exception("Invalid controller name: $controllerName");
+            // Generic error message to prevent information disclosure
+            throw new Exception("Invalid request");
         }
         
         if (!self::controllerExists($controllerName)) {
-            throw new Exception("Controller not found: $controllerName");
+            // Generic error message to prevent information disclosure
+            throw new Exception("Requested resource not found");
         }
         
         require_once __DIR__ . '/../controllers/' . $controllerName . '.php';

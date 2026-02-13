@@ -21,8 +21,8 @@ class ErrorHandler {
         // Create logs directory if it doesn't exist
         if (!is_dir(self::$logPath)) {
             if (!mkdir(self::$logPath, 0755, true)) {
-                // Log failure without exposing full path
-                error_log("Failed to create logs directory");
+                // Generic error message to prevent information disclosure
+                error_log("Logging initialization failed");
             }
         }
         
