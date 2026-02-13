@@ -52,6 +52,11 @@ class Router {
      * Note: This method loads the controller file to check method existence
      */
     public static function methodExists($controllerName, $methodName) {
+        // Sanitize controller name (defense in depth)
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $controllerName)) {
+            return false;
+        }
+        
         if (!self::controllerExists($controllerName)) {
             return false;
         }
