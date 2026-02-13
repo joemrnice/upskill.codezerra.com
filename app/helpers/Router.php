@@ -38,6 +38,11 @@ class Router {
      * Check if a controller exists
      */
     public static function controllerExists($controllerName) {
+        // Sanitize controller name to prevent directory traversal
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $controllerName)) {
+            return false;
+        }
+        
         $controllerFile = __DIR__ . '/../controllers/' . $controllerName . '.php';
         return file_exists($controllerFile);
     }
@@ -59,6 +64,11 @@ class Router {
      * Load and instantiate a controller
      */
     public static function loadController($controllerName) {
+        // Sanitize controller name to prevent directory traversal
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $controllerName)) {
+            throw new Exception("Invalid controller name: $controllerName");
+        }
+        
         if (!self::controllerExists($controllerName)) {
             throw new Exception("Controller not found: $controllerName");
         }
