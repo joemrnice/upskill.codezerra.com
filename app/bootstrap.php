@@ -69,6 +69,7 @@ function view($viewPath, $data = []) {
     } else {
         error_log("View not found: " . $viewPath);
         ErrorHandler::show500Error();
+        // ErrorHandler::show500Error() calls exit, execution stops here
     }
 }
 

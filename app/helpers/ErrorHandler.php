@@ -20,7 +20,9 @@ class ErrorHandler {
         
         // Create logs directory if it doesn't exist
         if (!is_dir(self::$logPath)) {
-            mkdir(self::$logPath, 0755, true);
+            if (!mkdir(self::$logPath, 0755, true)) {
+                error_log("Failed to create logs directory: " . self::$logPath);
+            }
         }
         
         // Set error and exception handlers
@@ -118,7 +120,10 @@ class ErrorHandler {
             str_repeat('-', 80)
         );
         
-        error_log($logMessage, 3, $logFile);
+        // Try to write to file, fallback to PHP error log if it fails
+        if (!error_log($logMessage, 3, $logFile)) {
+            error_log("Failed to write to log file. " . $type . ": " . json_encode($details));
+        }
     }
     
     /**

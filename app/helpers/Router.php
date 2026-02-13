@@ -44,6 +44,7 @@ class Router {
     
     /**
      * Check if a controller method exists
+     * Note: This method loads the controller file to check method existence
      */
     public static function methodExists($controllerName, $methodName) {
         if (!self::controllerExists($controllerName)) {
@@ -74,7 +75,7 @@ class Router {
             // Validate controller exists
             if (!self::controllerExists($controllerName)) {
                 ErrorHandler::show404Error();
-                return;
+                // ErrorHandler::show404Error() calls exit, so code below won't execute
             }
             
             // Load controller
@@ -83,7 +84,7 @@ class Router {
             // Validate method exists
             if (!method_exists($controller, $methodName)) {
                 ErrorHandler::show404Error();
-                return;
+                // ErrorHandler::show404Error() calls exit, so code below won't execute
             }
             
             // Execute method
@@ -99,6 +100,7 @@ class Router {
             } else {
                 ErrorHandler::show500Error();
             }
+            // ErrorHandler methods call exit, so code below won't execute
         }
     }
     
