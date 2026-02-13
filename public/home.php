@@ -4,7 +4,11 @@
  */
 
 require_once __DIR__ . '/../app/bootstrap.php';
-require_once __DIR__ . '/../app/controllers/HomeController.php';
 
-$homeController = new HomeController();
-$homeController->index();
+try {
+    Router::executeController('HomeController', 'index');
+} catch (Exception $e) {
+    error_log("Home page error: " . $e->getMessage());
+    ErrorHandler::show500Error();
+}
+

@@ -87,14 +87,12 @@ if (isset($routes[$requestMethod])) {
             $matched = true;
             list($controller, $method) = explode('@', $handler);
             
-            // Load controller and call method
-            $controllerFile = __DIR__ . '/../app/controllers/' . $controller . '.php';
-            if (file_exists($controllerFile)) {
-                require_once $controllerFile;
-                $controllerInstance = new $controller();
-                $controllerInstance->$method();
-            } else {
-                die("Controller not found: " . $controller);
+            // Use Router helper for safe controller execution
+            try {
+                Router::executeController($controller, $method);
+            } catch (Exception $e) {
+                error_log("Router error: " . $e->getMessage());
+                ErrorHandler::show500Error();
             }
             break;
         }
@@ -105,11 +103,12 @@ if (isset($routes[$requestMethod])) {
             $matched = true;
             list($controller, $method) = explode('@', $handler);
             
-            $controllerFile = __DIR__ . '/../app/controllers/' . $controller . '.php';
-            if (file_exists($controllerFile)) {
-                require_once $controllerFile;
-                $controllerInstance = new $controller();
-                $controllerInstance->$method();
+            // Use Router helper for safe controller execution
+            try {
+                Router::executeController($controller, $method);
+            } catch (Exception $e) {
+                error_log("Router error: " . $e->getMessage());
+                ErrorHandler::show500Error();
             }
             break;
         }
@@ -118,6 +117,6 @@ if (isset($routes[$requestMethod])) {
 
 // Handle 404
 if (!$matched) {
-    http_response_code(404);
-    echo "404 - Page Not Found";
+    ErrorHandler::show404Error();
 }
+

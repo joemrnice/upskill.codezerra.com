@@ -45,3 +45,7 @@ build/
 *.sql.gz
 *.sql.zip
 backup/
+
+# Test files
+public/test-*.php
+public/test-*.html

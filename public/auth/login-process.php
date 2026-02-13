@@ -4,11 +4,16 @@
  */
 
 require_once __DIR__ . '/../../app/bootstrap.php';
-require_once __DIR__ . '/../../app/controllers/AuthController.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $authController = new AuthController();
-    $authController->login();
+    try {
+        Router::executeController('AuthController', 'login');
+    } catch (Exception $e) {
+        error_log("Login process error: " . $e->getMessage());
+        Session::setFlash('error', 'An error occurred during login. Please try again.');
+        redirect(base_url('public/auth/login.php'));
+    }
 } else {
     redirect(base_url('public/auth/login.php'));
 }
+

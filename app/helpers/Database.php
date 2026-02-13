@@ -19,7 +19,14 @@ class Database {
             $this->connection = new PDO($dsn, $config['username'], $config['password'], $config['options']);
         } catch (PDOException $e) {
             error_log("Database Connection Error: " . $e->getMessage());
-            throw new Exception("Database connection failed. Please try again later.");
+            
+            // If ErrorHandler is available, use it
+            if (class_exists('ErrorHandler')) {
+                ErrorHandler::showDatabaseError();
+            } else {
+                // Fallback error message
+                throw new Exception("Database connection failed. Please try again later.");
+            }
         }
     }
     

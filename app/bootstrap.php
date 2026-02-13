@@ -4,9 +4,11 @@
  * Initialize application and autoload classes
  */
 
-// Error reporting for development (disable in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Load ErrorHandler first (before any errors can occur)
+require_once __DIR__ . '/../app/helpers/ErrorHandler.php';
+
+// Initialize error handling
+ErrorHandler::init();
 
 // Start session
 require_once __DIR__ . '/../app/helpers/Session.php';
@@ -29,10 +31,20 @@ spl_autoload_register(function ($className) {
     }
 });
 
-// Load configuration
-$config = require __DIR__ . '/../config/config.php';
-define('BASE_URL', $config['site_url']);
-define('SITE_NAME', $config['site_name']);
+// Load configuration with error handling
+try {
+    $config = require __DIR__ . '/../config/config.php';
+    define('BASE_URL', $config['site_url']);
+    define('SITE_NAME', $config['site_name']);
+    
+    // Define additional config constants
+    if (isset($config['admin_email'])) {
+        define('ADMIN_EMAIL', $config['admin_email']);
+    }
+} catch (Exception $e) {
+    error_log("Configuration loading error: " . $e->getMessage());
+    ErrorHandler::show500Error();
+}
 
 // Helper functions
 function redirect($url) {
@@ -55,7 +67,10 @@ function view($viewPath, $data = []) {
     if (file_exists($viewFile)) {
         require_once $viewFile;
     } else {
-        die("View not found: " . $viewPath);
+        // Log with view path name only (not full path) to prevent disclosure
+        error_log("View not found: " . basename($viewPath));
+        ErrorHandler::show500Error();
+        // ErrorHandler::show500Error() calls exit, execution stops here
     }
 }
 
