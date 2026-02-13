@@ -67,7 +67,8 @@ function view($viewPath, $data = []) {
     if (file_exists($viewFile)) {
         require_once $viewFile;
     } else {
-        error_log("View not found: " . $viewPath);
+        // Log with view path name only (not full path) to prevent disclosure
+        error_log("View not found: " . basename($viewPath));
         ErrorHandler::show500Error();
         // ErrorHandler::show500Error() calls exit, execution stops here
     }

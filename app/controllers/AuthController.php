@@ -12,13 +12,8 @@ class AuthController {
     private $userModel;
     
     public function __construct() {
-        try {
-            $this->userModel = new User();
-        } catch (Exception $e) {
-            error_log("AuthController initialization error: " . $e->getMessage());
-            // If database connection fails, it will be caught by ErrorHandler
-            throw $e;
-        }
+        // Database connection will be handled by ErrorHandler if it fails
+        $this->userModel = new User();
     }
     
     /**

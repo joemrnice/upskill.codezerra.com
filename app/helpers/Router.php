@@ -89,13 +89,7 @@ class Router {
      */
     public static function executeController($controllerName, $methodName = 'index') {
         try {
-            // Validate controller exists
-            if (!self::controllerExists($controllerName)) {
-                ErrorHandler::show404Error();
-                // ErrorHandler::show404Error() calls exit, so code below won't execute
-            }
-            
-            // Load controller
+            // Load controller (includes validation)
             $controller = self::loadController($controllerName);
             
             // Validate method exists
@@ -107,16 +101,16 @@ class Router {
             // Execute method
             $controller->$methodName();
             
+        } catch (PDOException $e) {
+            // Database-specific error handling
+            error_log("Database error: " . $e->getMessage());
+            ErrorHandler::showDatabaseError();
         } catch (Exception $e) {
             // Log the error
             error_log("Controller execution error: " . $e->getMessage());
             
-            // Show appropriate error page
-            if (strpos($e->getMessage(), 'Database') !== false || $e instanceof PDOException) {
-                ErrorHandler::showDatabaseError();
-            } else {
-                ErrorHandler::show500Error();
-            }
+            // Show 500 error page
+            ErrorHandler::show500Error();
             // ErrorHandler methods call exit, so code below won't execute
         }
     }
