@@ -5,7 +5,11 @@
  */
 
 require_once __DIR__ . '/../app/bootstrap.php';
-require_once __DIR__ . '/../app/controllers/CourseController.php';
 
-$controller = new CourseController();
-$controller->index();
+try {
+    Router::executeController('CourseController', 'index');
+} catch (Exception $e) {
+    error_log("Courses page error: " . $e->getMessage());
+    ErrorHandler::show500Error();
+}
+

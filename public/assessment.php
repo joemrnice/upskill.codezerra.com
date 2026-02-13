@@ -5,7 +5,11 @@
  */
 
 require_once __DIR__ . '/../app/bootstrap.php';
-require_once __DIR__ . '/../app/controllers/AssessmentController.php';
 
-$controller = new AssessmentController();
-$controller->show();
+try {
+    Router::executeController('AssessmentController', 'show');
+} catch (Exception $e) {
+    error_log("Assessment page error: " . $e->getMessage());
+    ErrorHandler::show500Error();
+}
+
