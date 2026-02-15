@@ -20,10 +20,6 @@ class DashboardController {
             Session::setFlash('error', 'Please login to access the dashboard.');
             redirect(base_url('public/auth/login.php'));
         }
-        
-        $this->courseModel = new Course();
-        $this->enrollmentModel = new Enrollment();
-        $this->db = Database::getInstance();
     }
     
     /**
@@ -32,34 +28,59 @@ class DashboardController {
     public function index() {
         $userId = Session::getUserId();
         
-        // Get user's enrolled courses with progress
-        $enrolledCourses = $this->enrollmentModel->getUserEnrollments($userId);
+        try {
+            // Lazy load models and database connection
+            $this->courseModel = new Course();
+            $this->enrollmentModel = new Enrollment();
+            $this->db = Database::getInstance();
         
-        // Get available courses (not enrolled)
-        $availableCourses = $this->getAvailableCourses($userId);
-        
-        // Get recent activity
-        $recentActivity = $this->getRecentActivity($userId);
-        
-        // Get user certificates
-        $certificates = $this->getUserCertificates($userId);
-        
-        // Get quick stats
-        $stats = [
-            'enrolled' => count($enrolledCourses),
-            'completed' => count(array_filter($enrolledCourses, function($course) {
-                return $course['status'] === 'completed';
-            })),
-            'certificates' => count($certificates)
-        ];
-        
-        view('user/dashboard', [
-            'enrolledCourses' => $enrolledCourses,
-            'availableCourses' => $availableCourses,
-            'recentActivity' => $recentActivity,
-            'certificates' => $certificates,
-            'stats' => $stats
-        ]);
+            // Get user's enrolled courses with progress
+            $enrolledCourses = $this->enrollmentModel->getUserEnrollments($userId);
+            
+            // Get available courses (not enrolled)
+            $availableCourses = $this->getAvailableCourses($userId);
+            
+            // Get recent activity
+            $recentActivity = $this->getRecentActivity($userId);
+            
+            // Get user certificates
+            $certificates = $this->getUserCertificates($userId);
+            
+            // Get quick stats
+            $stats = [
+                'enrolled' => count($enrolledCourses),
+                'completed' => count(array_filter($enrolledCourses, function($course) {
+                    return $course['status'] === 'completed';
+                })),
+                'certificates' => count($certificates)
+            ];
+            
+            view('user/dashboard', [
+                'enrolledCourses' => $enrolledCourses,
+                'availableCourses' => $availableCourses,
+                'recentActivity' => $recentActivity,
+                'certificates' => $certificates,
+                'stats' => $stats
+            ]);
+            
+        } catch (Exception $e) {
+            // Handle database errors gracefully
+            error_log("DashboardController Error: " . $e->getMessage());
+            
+            view('user/dashboard', [
+                'enrolledCourses' => [],
+                'availableCourses' => [],
+                'recentActivity' => [],
+                'certificates' => [],
+                'stats' => [
+                    'enrolled' => 0,
+                    'completed' => 0,
+                    'certificates' => 0
+                ],
+                'db_error' => true,
+                'error_message' => 'Unable to load dashboard data. Please ensure the database is configured properly.'
+            ]);
+        }
     }
     
     /**
